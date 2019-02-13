@@ -1,28 +1,102 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+   state = {
+      em: '',
+      pw: '',
+      msg: '',
+      jwt: ''
+   }
+
+   render() {
+      return (
+         <div className="App">
+            <form
+            >
+               <input
+                  type="email"
+                  name="em"
+                  value={this.state.em}
+                  onChange={this.onChange}
+                  placeholder="email"
+               />
+               <input
+                  type="password"
+                  name="pw"
+                  value={this.state.pw}
+                  onChange={this.onChange}
+                  placeholder="password"
+               />
+               <button
+                  onClick={this.postLogin}
+               > login
+               </button>
+               <button
+                  onClick={this.postSignup}
+               > signup
+               </button>
+            </form>
+
+            <p>SERVER RESPONSE MESSAGE: {this.state.msg}</p>
+            <p>JWT: {this.state.jwt}</p>
+         </div>
+      );
+   }
+
+   onChange = (e) => {
+      this.setState({ [e.target.name]: e.target.value })
+   }
+
+   postLogin = (e) => {
+      e.preventDefault();
+      fetch("http://localhost:3001/login", {
+         method: "POST",
+         headers: {
+            "accept": "application/json",
+            "content-type": "application/json"
+         },
+         body: JSON.stringify({
+            em: this.state.em,
+            pw: this.state.pw
+         })
+      })
+         .then((res) => res.json())
+         .then((json) => {
+            this.setState({
+               em: '',
+               pw: '',
+               msg: json.msg,
+               jwt: json.jwt
+            })
+         })
+   }
+
+   postSignup = (e) => {
+      e.preventDefault();
+      console.log(this.state.em, this.state.pw);
+      fetch("http://localhost:3001/signup", {
+         method: "POST",
+         headers: {
+            "accept": "application/json",
+            "content-type": "application/json"
+         },
+         body: JSON.stringify({
+            em: this.state.em,
+            pw: this.state.pw
+         })
+      })
+         .then((res) => res.json())
+         .then((json) => {
+            this.setState({
+               em: '',
+               pw: '',
+               msg: json.msg,
+               jwt: json.jwt
+            })
+         })
+   }
+
 }
 
 export default App;
